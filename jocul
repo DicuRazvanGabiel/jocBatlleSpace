@@ -1,0 +1,144 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <conio.h>
+#include <windows.h>
+bool gameOver = false;
+const int inaltime = 10;
+const int latime = 20;
+int xNava = 10, yNava = 9;
+typedef enum { stop, stanga, dreapta, sus, jos } Directia;
+Directia dir;
+struct inamic {
+    int x;
+    int y;
+}inamic;
+void desen2();
+void genInamic();
+void control ()
+{
+        switch (_getch()){
+        case 'a':
+                dir = stanga;
+                break;
+            case 's':
+                dir = jos;
+                break;
+            case 'd':
+                dir = dreapta;
+                break;
+            case 'w':
+                dir = sus;
+                break;
+            default:
+                break;
+        }
+}
+void logic ()
+{
+    //miscarea navei
+    switch (dir){
+        case dreapta :
+            xNava ++;
+            break;
+        case stanga :
+            xNava --;
+            break;
+        case sus:
+            yNava --;
+            break;
+        case jos:
+            yNava ++;
+            break;
+        default:
+            break;
+    }
+    /////
+    //Cand te lovesti de un inamic
+    if(xNava == inamic.x && yNava == inamic.y)
+        gameOver = true;
+    //Deplasarea navei la margini
+    if(xNava == 1)
+        xNava = latime-2;
+    if(xNava == latime -1)
+        xNava = 2;
+    if(yNava == 1)
+        yNava = inaltime-2;
+    if(yNava == inaltime)
+        yNava = 1;
+    //
+    //inamicul la margini
+    if(inamic.y == 1)
+        inamic.y = inaltime-2;
+    if(inamic.y == inaltime-1){
+        inamic.y = 1;
+        inamic.x = rand() % latime +1;
+    }
+    //
+}
+
+int main ()
+{
+    mesaj();
+    int i,j;
+    srand(time(NULL));
+    inamic.x = 2;
+    inamic.y = 2;
+   while(!gameOver){
+           // for( i = inamic.y; i < inaltime; i++)
+                if(kbhit()){
+                    control();
+                    inamic.y ++;
+                    logic();
+                    desen2();
+                    Sleep(100);
+				}else{
+                    inamic.y ++;
+                    logic();
+                    desen2();
+                    Sleep(100);
+                }
+    }
+   if(gameOver){
+        system("cls");
+        printf("\n\n\n\n\n\t\tAI MURIT!!\n\n\n\n\n");
+   }
+    return 0;
+}
+void desen2 ()
+{
+    int i,j;
+    system("cls");
+    for (i=0; i < latime+2; i++){
+        printf("#");
+    }
+    printf("\n");
+
+    for(i = 0; i < inaltime; i++){
+        for(j = 0; j < latime; j++ ){
+            if(j == 0)
+                printf("#");
+            if(i == yNava && j == xNava){
+                printf("^");
+            } else if (j == inamic.x && i == inamic.y )
+                printf("i");
+            else
+            printf(" ");
+            if(j == latime-1)
+                printf("#");
+        }
+    printf("\n");
+    }
+
+    for (i=0; i < latime+2; i++){
+        printf("#");
+    }
+    printf("\n");
+}
+void mesaj ()
+{
+    system("cls");
+    printf("\n\n\n\n\n\t\tBATTLE SPACE\n\n\n\n\n\t\t");
+    Sleep(1000);
+    printf("Developer: Dicu Razvan Gabriel");
+    Sleep(1000);
+}
